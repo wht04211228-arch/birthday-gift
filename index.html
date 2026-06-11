@@ -3,142 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>生日祝福</title>
+<title>至尊版生日贺卡</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    overflow: hidden;
-    background: linear-gradient(to top, #ffecd2 0%, #fcb69f 100%);
-  }
-  #slideshow {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
-  #slideshow img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-  }
-  #slideshow img.active {
-    opacity: 1;
-  }
-  #loveLetter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    text-align: center;
-    color: #fff;
-    font-size: 2em;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-    animation: fadeIn 2s ease-in-out forwards;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  canvas {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-  }
+/* ===========================
+   通用样式
+=========================== */
+body, html {
+    margin:0; padding:0;
+    width:100%; height:100%;
+    overflow:hidden;
+    font-family:'Arial', sans-serif;
+    background:#000;
+    color:#fff;
+}
+/* 星空背景 */
+#stars {
+    position:absolute;
+    width:100%; height:100%;
+    background:#000;
+    overflow:hidden;
+}
+.star {
+    position:absolute;
+    width:2px; height:2px;
+    background:#fff;
+    border-radius:50%;
+    animation: twinkle 3s infinite;
+}
+@keyframes twinkle {
+    0%,100% {opacity:0.2;}
+    50% {opacity:1;}
+}
+/* 照片轮播 */
+#carousel {
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:90%; max-width:600px;
+    height:400px;
+    overflow:hidden;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(255,255,255,0.5);
+}
+#carousel img {
+    width:100%; height:100%;
+    object-fit:cover;
+    position:absolute;
+    opacity:0;
+    transition:opacity 1s ease-in-out;
+}
+/* 打字机动画 */
+#letter {
+    position:absolute;
+    bottom:50px; left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    text-align:center;
+    font-size:24px;
+    line-height:1.5;
+    white-space:pre-wrap;
+}
+/* 烟花 */
+.firework {
+    position:absolute;
+    width:4px; height:4px;
+    background:yellow;
+    border-radius:50%;
+    animation:explode 1s ease-out forwards;
+}
+@keyframes explode {
+    0% {opacity:1; transform:translate(0,0);}
+    100% {opacity:0; transform:translate(var(--x),var(--y));}
+}
+/* 漂浮爱心 */
+.heart {
+    position:absolute;
+    width:20px; height:20px;
+    background:red;
+    clip-path:polygon(50% 0%, 61% 12%, 75% 12%, 88% 25%, 88% 37%, 75% 50%, 50% 75%, 25% 50%, 12% 37%, 12% 25%, 25% 12%, 39% 12%);
+    animation: floatHeart 6s linear infinite;
+}
+@keyframes floatHeart {
+    0% {transform:translateY(100vh) scale(0.5); opacity:0;}
+    50% {opacity:1;}
+    100% {transform:translateY(-100px) scale(1); opacity:0;}
+}
+/* 倒计时 */
+#countdown {
+    position:absolute;
+    top:20px; left:50%;
+    transform:translateX(-50%);
+    font-size:28px;
+    font-weight:bold;
+    text-shadow:0 0 10px #fff;
+}
 </style>
 </head>
 <body>
-
-<!-- 背景音乐 -->
-<audio id="bgm" src="music.mp3" autoplay loop></audio>
+<!-- 星空 -->
+<div id="stars"></div>
 
 <!-- 照片轮播 -->
-<div id="slideshow">
-  <img src="photo1.jpg" class="active">
-  <img src="photo2.jpg">
-  <img src="photo3.jpg">
+<div id="carousel">
+    <img src="photos/photo1.jpg" class="active">
+    <img src="photos/photo2.jpg">
+    <img src="photos/photo3.jpg">
 </div>
 
-<!-- 情书动画 -->
-<div id="loveLetter">🎂 生日快乐！愿所有美好都奔向你！</div>
+<!-- 打字机情书 -->
+<div id="letter"></div>
 
-<!-- 烟花动画 -->
-<canvas id="fireworks"></canvas>
+<!-- 倒计时 -->
+<div id="countdown"></div>
+
+<!-- 背景音乐 -->
+<audio id="bgMusic" src="music/music.mp3" autoplay loop></audio>
 
 <script>
+// =====================
+// 星空生成
+// =====================
+for(let i=0;i<200;i++){
+    let s=document.createElement('div');
+    s.className='star';
+    s.style.top=Math.random()*100+'%';
+    s.style.left=Math.random()*100+'%';
+    s.style.width=Math.random()*2+1+'px';
+    s.style.height=s.style.width;
+    document.getElementById('stars').appendChild(s);
+}
+
+// =====================
 // 照片轮播
-const slides = document.querySelectorAll('#slideshow img');
-let current = 0;
-setInterval(() => {
-  slides[current].classList.remove('active');
-  current = (current + 1) % slides.length;
-  slides[current].classList.add('active');
-}, 4000);
+// =====================
+let carouselImgs=document.querySelectorAll('#carousel img');
+let current=0;
+setInterval(()=>{
+    carouselImgs[current].style.opacity=0;
+    current=(current+1)%carouselImgs.length;
+    carouselImgs[current].style.opacity=1;
+},4000);
 
-// 烟花动画
-const canvas = document.getElementById('fireworks');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-class Particle {
-  constructor(x, y, color) {
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.vel = { x: (Math.random()-0.5)*6, y: Math.random()*-8 };
-    this.alpha = 1;
-    this.size = Math.random()*3 + 2;
-  }
-  update() {
-    this.x += this.vel.x;
-    this.y += this.vel.y;
-    this.vel.y += 0.15; // gravity
-    this.alpha -= 0.015;
-  }
-  draw() {
-    ctx.globalAlpha = this.alpha;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-  }
+// =====================
+// 打字机情书
+// =====================
+const letterText = "亲爱的，你是我生命中最闪亮的星，\n愿你的生日充满惊喜和幸福。";
+let idx=0;
+function typeLetter(){
+    document.getElementById('letter').innerText=letterText.slice(0,idx++);
+    if(idx<=letterText.length) setTimeout(typeLetter,100);
 }
+typeLetter();
 
-let particles = [];
+// =====================
+// 倒计时
+// =====================
+const birthday=new Date('2026-06-15T00:00:00');
+function updateCountdown(){
+    let now=new Date();
+    let diff=birthday-now;
+    if(diff<0){document.getElementById('countdown').innerText="生日快乐!"; return;}
+    let d=Math.floor(diff/1000/60/60/24);
+    let h=Math.floor(diff/1000/60/60)%24;
+    let m=Math.floor(diff/1000/60)%60;
+    let s=Math.floor(diff/1000)%60;
+    document.getElementById('countdown').innerText=`距离生日还有 ${d}天 ${h}小时 ${m}分钟 ${s}秒`;
+}
+setInterval(updateCountdown,1000);
 
-function fireworks() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(Math.random() < 0.03) {
-    let x = Math.random()*canvas.width;
-    let y = Math.random()*canvas.height/2;
-    let color = `hsl(${Math.random()*360}, 100%, 50%)`;
-    for(let i=0;i<30;i++){
-      particles.push(new Particle(x, y, color));
+// =====================
+// 烟花效果
+// =====================
+function createFirework(x,y){
+    for(let i=0;i<20;i++){
+        let f=document.createElement('div');
+        f.className='firework';
+        let angle=Math.random()*2*Math.PI;
+        let distance=Math.random()*100+50;
+        f.style.setProperty('--x',distance*Math.cos(angle)+'px');
+        f.style.setProperty('--y',distance*Math.sin(angle)+'px');
+        f.style.top=y+'px';
+        f.style.left=x+'px';
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
     }
-  }
-  for(let i=particles.length-1;i>=0;i--){
-    particles[i].update();
-    particles[i].draw();
-    if(particles[i].alpha <= 0) particles.splice(i,1);
-  }
-  requestAnimationFrame(fireworks);
 }
-fireworks();
+setInterval(()=>createFirework(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.5),1500);
 
-// 手机浏览器自动播放
-document.getElementById('bgm').play().catch(()=>{});
+// =====================
+// 漂浮爱心
+// =====================
+function createHeart(){
+    let h=document.createElement('div');
+    h.className='heart';
+    h.style.left=Math.random()*100+'%';
+    h.style.animationDuration=(Math.random()*3+3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+}
+setInterval(createHeart,500);
 </script>
-
 </body>
 </html>
