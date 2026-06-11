@@ -148,6 +148,26 @@ document.body.appendChild(heart);
 
 }
 
+const photos=[
+"https://picsum.photos/id/1015/400/300",
+"https://picsum.photos/id/1016/400/300",
+"https://picsum.photos/id/1018/400/300"
+];
+
+let current=0;
+
+setInterval(()=>{
+
+current++;
+
+if(current>=photos.length){
+current=0;
+}
+
+document.getElementById("photo").src=photos[current];
+
+},2500);
+
 </script>
 
 </body>
