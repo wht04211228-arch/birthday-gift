@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>生日快乐</title>
+
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+font-family:sans-serif;
+}
+
+.card{
+background:rgba(255,255,255,.2);
+backdrop-filter:blur(10px);
+padding:30px;
+border-radius:20px;
+text-align:center;
+color:white;
+}
+
+h1{
+font-size:40px;
+}
+
+button{
+padding:12px 24px;
+border:none;
+border-radius:20px;
+font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>🎂生日快乐</h1>
+
+<p>这是我的第一份网页礼物</p>
+
+<button onclick="showMsg()">
+点击领取祝福
+</button>
+
+</div>
+
+<script>
+function showMsg(){
+alert("祝你天天开心！");
+}
+</script>
+
+</body>
+</html>
