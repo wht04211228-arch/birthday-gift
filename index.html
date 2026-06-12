@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Ultimate 商业电子贺卡</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/glass.css">
+<link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop playsinline>
+<source src="assets/video/bg.mp4" type="video/mp4">
+</video>
+
+<canvas id="bgCanvas"></canvas>
+
+<div id="mainText">生日快乐！🎉</div>
+
+<div id="photoWall"></div>
+<div id="timeline"></div>
+
+<div id="messageBoard">
+<h2>生日祝福留言墙 🎂</h2>
+<input type="text" id="userName" placeholder="你的名字">
+<textarea id="userMessage" placeholder="写下你的祝福..."></textarea>
+<button onclick="addMessage()">发送祝福</button>
+<div id="messages"></div>
+</div>
+
+<div id="secretHeart">❤️</div>
+<div id="giftBox">🎁</div>
+
+<audio id="bgMusic" autoplay loop></audio>
+
+<div id="voiceBtn">🎤 播放生日祝福</div>
+
+<script src="js/particles.js"></script>
+<script src="js/fireworks.js"></script>
+<script src="js/heart3d.js"></script>
+<script src="js/album3d.js"></script>
+<script src="js/music.js"></script>
+<script src="js/aiwish.js"></script>
+<script src="js/app.js"></script>
+<script src="config.js"></script>
+</body>
+</html>
