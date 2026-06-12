@@ -9,3 +9,4 @@ const config = {
   aiVoiceEnabled:true,
   shareMeta:{title:"生日快乐",description:"专属生日祝福",image:"assets/photos/cover.jpg"}
 };
+
