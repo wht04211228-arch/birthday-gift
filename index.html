@@ -3,205 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>至尊版生日贺卡</title>
+<title>1000元至尊版生日电子贺卡</title>
 <style>
-/* ===========================
-   通用样式
-=========================== */
-body, html {
-    margin:0; padding:0;
-    width:100%; height:100%;
-    overflow:hidden;
-    font-family:'Arial', sans-serif;
-    background:#000;
-    color:#fff;
-}
-/* 星空背景 */
-#stars {
-    position:absolute;
-    width:100%; height:100%;
-    background:#000;
-    overflow:hidden;
-}
-.star {
-    position:absolute;
-    width:2px; height:2px;
-    background:#fff;
-    border-radius:50%;
-    animation: twinkle 3s infinite;
-}
-@keyframes twinkle {
-    0%,100% {opacity:0.2;}
-    50% {opacity:1;}
-}
-/* 照片轮播 */
-#carousel {
-    position:absolute;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    width:90%; max-width:600px;
-    height:400px;
-    overflow:hidden;
-    border-radius:20px;
-    box-shadow:0 0 20px rgba(255,255,255,0.5);
-}
-#carousel img {
-    width:100%; height:100%;
-    object-fit:cover;
-    position:absolute;
-    opacity:0;
-    transition:opacity 1s ease-in-out;
-}
-/* 打字机动画 */
-#letter {
-    position:absolute;
-    bottom:50px; left:50%;
-    transform:translateX(-50%);
-    width:80%;
-    text-align:center;
-    font-size:24px;
-    line-height:1.5;
-    white-space:pre-wrap;
-}
-/* 烟花 */
-.firework {
-    position:absolute;
-    width:4px; height:4px;
-    background:yellow;
-    border-radius:50%;
-    animation:explode 1s ease-out forwards;
-}
-@keyframes explode {
-    0% {opacity:1; transform:translate(0,0);}
-    100% {opacity:0; transform:translate(var(--x),var(--y));}
-}
-/* 漂浮爱心 */
-.heart {
-    position:absolute;
-    width:20px; height:20px;
-    background:red;
-    clip-path:polygon(50% 0%, 61% 12%, 75% 12%, 88% 25%, 88% 37%, 75% 50%, 50% 75%, 25% 50%, 12% 37%, 12% 25%, 25% 12%, 39% 12%);
-    animation: floatHeart 6s linear infinite;
-}
-@keyframes floatHeart {
-    0% {transform:translateY(100vh) scale(0.5); opacity:0;}
-    50% {opacity:1;}
-    100% {transform:translateY(-100px) scale(1); opacity:0;}
-}
-/* 倒计时 */
-#countdown {
-    position:absolute;
-    top:20px; left:50%;
-    transform:translateX(-50%);
-    font-size:28px;
-    font-weight:bold;
-    text-shadow:0 0 10px #fff;
-}
+  html, body {
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background: #0a0a20;
+    color: #fff;
+  }
+
+  /* 粒子背景 */
+  canvas#bgCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+  }
+
+  /* 中心祝福文字 */
+  #mainText {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    text-align: center;
+    font-size: 3em;
+    color: #ff6b81;
+    text-shadow: 0 0 20px #ff6b81;
+    animation: fadeIn 3s ease-in-out forwards;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.8);}
+    100% { opacity: 1; transform: scale(1);}
+  }
+
+  /* 照片墙 */
+  #photoWall {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px;
+  }
+
+  #photoWall img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 0 10px #ff6b81;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+
+  #photoWall img:hover {
+    transform: scale(1.2);
+  }
+
+  /* 背景音乐 */
+  #bgMusic {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  #bgMusic.playing {
+    animation: rotate 2s linear infinite;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg);}
+    to { transform: rotate(360deg);}
+  }
 </style>
 </head>
 <body>
-<!-- 星空 -->
-<div id="stars"></div>
 
-<!-- 照片轮播 -->
-<div id="carousel">
-    <img src="photos/photo1.jpg" class="active">
-    <img src="photos/photo2.jpg">
-    <img src="photos/photo3.jpg">
+<canvas id="bgCanvas"></canvas>
+
+<div id="mainText">生日快乐！</div>
+
+<div id="photoWall">
+  <img src="https://picsum.photos/id/1011/100/100" alt="Photo1">
+  <img src="https://picsum.photos/id/1012/100/100" alt="Photo2">
+  <img src="https://picsum.photos/id/1013/100/100" alt="Photo3">
+  <img src="https://picsum.photos/id/1015/100/100" alt="Photo4">
+  <img src="https://picsum.photos/id/1016/100/100" alt="Photo5">
 </div>
 
-<!-- 打字机情书 -->
-<div id="letter"></div>
-
-<!-- 倒计时 -->
-<div id="countdown"></div>
-
-<!-- 背景音乐 -->
-<audio id="bgMusic" src="music/music.mp3" autoplay loop></audio>
+<audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" autoplay loop></audio>
 
 <script>
-// =====================
-// 星空生成
-// =====================
-for(let i=0;i<200;i++){
-    let s=document.createElement('div');
-    s.className='star';
-    s.style.top=Math.random()*100+'%';
-    s.style.left=Math.random()*100+'%';
-    s.style.width=Math.random()*2+1+'px';
-    s.style.height=s.style.width;
-    document.getElementById('stars').appendChild(s);
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+for(let i=0; i<150; i++){
+  particles.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*3 + 1,
+    dx: (Math.random()-0.5)*1.5,
+    dy: (Math.random()-0.5)*1.5,
+    color: 'rgba(255,255,255,' + Math.random()+')'
+  });
 }
 
-// =====================
-// 照片轮播
-// =====================
-let carouselImgs=document.querySelectorAll('#carousel img');
-let current=0;
-setInterval(()=>{
-    carouselImgs[current].style.opacity=0;
-    current=(current+1)%carouselImgs.length;
-    carouselImgs[current].style.opacity=1;
-},4000);
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let p of particles){
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+    ctx.fillStyle = p.color;
+    ctx.fill();
 
-// =====================
-// 打字机情书
-// =====================
-const letterText = "亲爱的，你是我生命中最闪亮的星，\n愿你的生日充满惊喜和幸福。";
-let idx=0;
-function typeLetter(){
-    document.getElementById('letter').innerText=letterText.slice(0,idx++);
-    if(idx<=letterText.length) setTimeout(typeLetter,100);
-}
-typeLetter();
+    p.x += p.dx;
+    p.y += p.dy;
 
-// =====================
-// 倒计时
-// =====================
-const birthday=new Date('2026-06-15T00:00:00');
-function updateCountdown(){
-    let now=new Date();
-    let diff=birthday-now;
-    if(diff<0){document.getElementById('countdown').innerText="生日快乐!"; return;}
-    let d=Math.floor(diff/1000/60/60/24);
-    let h=Math.floor(diff/1000/60/60)%24;
-    let m=Math.floor(diff/1000/60)%60;
-    let s=Math.floor(diff/1000)%60;
-    document.getElementById('countdown').innerText=`距离生日还有 ${d}天 ${h}小时 ${m}分钟 ${s}秒`;
+    if(p.x<0 || p.x>canvas.width) p.dx*=-1;
+    if(p.y<0 || p.y>canvas.height) p.dy*=-1;
+  }
+  requestAnimationFrame(drawParticles);
 }
-setInterval(updateCountdown,1000);
+drawParticles();
 
-// =====================
-// 烟花效果
-// =====================
-function createFirework(x,y){
-    for(let i=0;i<20;i++){
-        let f=document.createElement('div');
-        f.className='firework';
-        let angle=Math.random()*2*Math.PI;
-        let distance=Math.random()*100+50;
-        f.style.setProperty('--x',distance*Math.cos(angle)+'px');
-        f.style.setProperty('--y',distance*Math.sin(angle)+'px');
-        f.style.top=y+'px';
-        f.style.left=x+'px';
-        document.body.appendChild(f);
-        setTimeout(()=>f.remove(),1000);
-    }
-}
-setInterval(()=>createFirework(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.5),1500);
+// 背景音乐点击控制
+const music = document.getElementById('bgMusic');
+music.addEventListener('click', ()=>{
+  if(music.paused){
+    music.play();
+    music.classList.add('playing');
+  } else {
+    music.pause();
+    music.classList.remove('playing');
+  }
+});
+music.classList.add('playing');
 
-// =====================
-// 漂浮爱心
-// =====================
-function createHeart(){
-    let h=document.createElement('div');
-    h.className='heart';
-    h.style.left=Math.random()*100+'%';
-    h.style.animationDuration=(Math.random()*3+3)+'s';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
+// 照片墙滚动效果（自动轮播）
+const photoWall = document.getElementById('photoWall');
+let scrollPos = 0;
+function autoScroll(){
+  scrollPos += 0.5;
+  if(scrollPos > photoWall.scrollWidth - photoWall.clientWidth) scrollPos = 0;
+  photoWall.scrollLeft = scrollPos;
+  requestAnimationFrame(autoScroll);
 }
-setInterval(createHeart,500);
+autoScroll();
 </script>
+
 </body>
 </html>
