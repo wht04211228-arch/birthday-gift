@@ -1,1 +1,0 @@
-// fireworks.js 示例文件
